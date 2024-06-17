@@ -46,6 +46,14 @@ Blog.put('/', (c) => {
     return c.text("Blog editing page")
 })
 
+Blog.get('/bulk', (c) => {
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    return c.text('bulk post page')
+})
+
 Blog.get('/:id', (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
@@ -55,12 +63,5 @@ Blog.get('/:id', (c) => {
     return c.text(`getting blog of id ${id}`)
 })
 
-Blog.get('/bulk', (c) => {
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-
-    return c.text('bulk post page')
-})
 
 export default Blog;
