@@ -58,12 +58,7 @@ user.post('/signin', async (c) => {
             });
         }
 
-        const payload = {
-            sub: user.id   
-          };
-        
-        
-        const token = await sign(payload, c.env.JWT_SECRET);
+        const token = await sign({ id: user.id }, c.env.JWT_SECRET);
 	    return c.json({
             token: token
         });
