@@ -27,7 +27,7 @@ Blog.use('/*', async (c, next) => {
         const userId = user.id as number;
         c.set("userId",userId);
         // c.set("userId",user.id);
-        next();
+        await next();
     }
     else{
         c.status(403);
@@ -39,11 +39,11 @@ Blog.use('/*', async (c, next) => {
 })
 
 Blog.post('/', async (c)=>{
+    const body = await c.req.json();
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    const body = await c.req.json();
     try{
         const post = await prisma.post.create({
             data:{
@@ -75,7 +75,7 @@ Blog.put('/', async (c) => {
     const body = await c.req.json();
 
     try{
-        await prisma.post.update({
+        const updatedpost = await prisma.post.update({
             where:{
                 id: body.id,
                 authorId: userId
@@ -86,7 +86,8 @@ Blog.put('/', async (c) => {
             }
         });
         return c.json({
-            message:"post updated"
+            message:"post updated",
+            updatedpost
         });
 
     } catch(error){
@@ -95,23 +96,47 @@ Blog.put('/', async (c) => {
     }
 })
 
-Blog.get('/bulk', (c) => {
+// Blog.get('/bulk', (c) =>{
+//     return c.text("bilk called")
+// } )
+
+Blog.get('/bulk', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
+    
+    
+    try{
+        const posts = await prisma.post.findMany({});
+        console.log("bulk is called");
+        if (posts.length === 0) {
+            return c.json({ message: "No posts available" });
+        }
 
-    const userId = c.get('userId');
+        return c.json({posts});
 
-    return c.text('bulk post page')
+    } catch(error){
+        console.log(`Error at blog/bulk ${error}`);
+        return c.json("No post Available")
+        
+    }
 })
 
-Blog.get('/:id', (c) => {
+Blog.get('/:id', async (c) => {
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    const id = c.req.param('id')
-    return c.text(`getting blog of id ${id}`)
+    const id = parseInt(c.req.param('id'));
+    const posts = await prisma.post.findFirst({
+		where: {
+			id
+		}
+	});
+
+    return c.json({
+        posts
+    });
 })
 
 
