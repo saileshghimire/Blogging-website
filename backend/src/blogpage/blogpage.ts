@@ -17,7 +17,8 @@ const Blog = new Hono<{
 
 Blog.use('/*', async (c, next) => {
     const header = c.req.header("authorization") || "";
-    const token = header.split(" ")[1];
+    // const token = header.split(" ")[1];
+    const token = header
    
     const user = await verify(token, c.env.JWT_SECRET);
     console.log(user);
@@ -122,7 +123,18 @@ Blog.get('/bulk', async (c) => {
     
     
     try{
-        const posts = await prisma.post.findMany({});
+        const posts = await prisma.post.findMany({
+            select:{
+                id: true,
+                title: true,
+                content: true,
+                author:{
+                    select:{
+                        name:true
+                    }
+                }
+            }
+        });
         console.log("bulk is called");
         if (posts.length === 0) {
             return c.json({ message: "No posts available" });
@@ -146,7 +158,17 @@ Blog.get('/:id', async (c) => {
     const posts = await prisma.post.findFirst({
 		where: {
 			id
-		}
+		},
+        select:{
+            id:true,
+            title:true,
+            content: true,
+            author:{
+                select:{
+                    name: true
+                }
+            }
+        }
 	});
 
     return c.json({

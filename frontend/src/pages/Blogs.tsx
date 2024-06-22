@@ -1,43 +1,34 @@
+import { Appbar } from "../components/Appbar"
 import { BlogCard } from "../components/BlogCard"
+import { useBlogs } from "../hooks"
 
 
 
 export const Blogs =() =>{
+    const {loading, blogs} = useBlogs();
+    if(loading){
+        return(
+            <div>
+                loading...
+            </div>
+        )
+    }
     return(
+        <div>
+            <Appbar />
         <div className="flex justify-center">
             <div className="max-w-xl">
-            <BlogCard
-                autherName={"Sailesh"}
-                title={"Title of the blog "}
-                content= {" content of the blog: bdsuuc bducnjusbduc ubdcusb busbdcub usbdcubs budbcsdusi bdusb bsibcv bsucbv yucbvyd yucvuv svucvy ydv cuv vuxcv vxyhvcb  bsuxbcu suxybcdbc ysxcbbdcyuv "}
-                publishedDate={"2nd Feb 2021"}
-                />
+            {blogs.map(blog =>
                 <BlogCard
-                autherName={"Sailesh"}
-                title={"Title of the blog "}
-                content= {" content of the blog: bdsuuc bducnjusbduc ubdcusb busbdcub usbdcubs budbcsdusi bdusb bsibcv bsucbv yucbvyd yucvuv svucvy ydv cuv vuxcv vxyhvcb  bsuxbcu suxybcdbc ysxcbbdcyuv "}
-                publishedDate={"2nd Feb 2021"}
+                id={blog.id}
+                autherName={blog.author.name || "Anynomus"}
+                title={blog.title}
+                content={blog.content}
+                publishedDate={"2nd feb 2021"}
                 />
-                <BlogCard
-                autherName={"Sailesh"}
-                title={"Title of the blog "}
-                content= {" content of the blog: bdsuuc bducnjusbduc ubdcusb busbdcub usbdcubs budbcsdusi bdusb bsibcv bsucbv yucbvyd yucvuv svucvy ydv cuv vuxcv vxyhvcb  bsuxbcu suxybcdbc ysxcbbdcyuv "}
-                publishedDate={"2nd Feb 2021"}
-                />
-                <BlogCard
-                autherName={"Sailesh"}
-                title={"Title of the blog "}
-                content= {" content of the blog: bdsuuc bducnjusbduc ubdcusb busbdcub usbdcubs budbcsdusi bdusb bsibcv bsucbv yucbvyd yucvuv svucvy ydv cuv vuxcv vxyhvcb  bsuxbcu suxybcdbc ysxcbbdcyuv "}
-                publishedDate={"2nd Feb 2021"}
-                />
-                <BlogCard
-                autherName={"Sailesh"}
-                title={"Title of the blog "}
-                content= {" content of the blog: bdsuuc bducnjusbduc ubdcusb busbdcub usbdcubs budbcsdusi bdusb bsibcv bsucbv yucbvyd yucvuv svucvy ydv cuv vuxcv vxyhvcb  bsuxbcu suxybcdbc ysxcbbdcyuv "}
-                publishedDate={"2nd Feb 2021"}
-                />
+            )}
             </div>
-
+            </div>
         </div>
     )
 }
